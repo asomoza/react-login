@@ -1,0 +1,22 @@
+html, body {
+    background: rgb(81,82,94);
+    background: linear-gradient(225deg, rgba(81,82,94,1) 7%, rgba(160,171,177,1) 66%, rgba(255,255,255,1) 100%);
+    color: #3f3f3f;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+.App {
+     width: 100%;
+     height: 100%;
+ }
+
