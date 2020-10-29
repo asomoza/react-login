@@ -1,4 +1,5 @@
 import React from "react";
+import { navigate } from "@reach/router"
 
 import "./login.css";
 
@@ -43,6 +44,7 @@ class Login extends React.Component {
         } else {
             // Auth passed, redirect to dashboard
             console.log("success");
+            navigate('/dashboard')
         }
     }
 
