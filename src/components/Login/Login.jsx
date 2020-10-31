@@ -1,85 +1,73 @@
-import React from "react";
+import React, { useState, useEffect, useContext  } from "react";
 import { navigate } from "@reach/router"
+
+import { AuthContext} from "../../helpers/AuthContext";
 
 import "./login.css";
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            date: new Date(),
-            user: '',
-            password: '',
-            error: ''
-        };
+export function Login(props) {
+    let timerID;
 
-        this.handleUserChange = this.handleUserChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-    }
+    const { user, updateUser } = useContext(AuthContext);
 
-    componentDidMount() {
-        this.timerID = setInterval(
-            () => this.tick(), 1000
+    const [inputs, setInputs] = useState({
+        user: '',
+        password: ''
+    });
+    const [error, setError] = useState('');
+    const [date, setDate] = useState(new Date());
+
+    useEffect(() => {
+        timerID = setInterval(
+            () => tick(), 1000
         );
-    }
 
-    componentWillUnmount() {
-        clearInterval(this.timerID);
-    }
+        return () => {
+            clearInterval(timerID);
+        };
+    });
 
-    tick() {
-        this.setState({
-           date: new Date()
-        });
-    }
+    const tick = () => {
+        setDate(new Date());
+    };
 
-    handleLogin(event) {
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setInputs(inputs => ({ ...inputs, [name]: value }));
+    };
+
+    const handleLogin = (event) => {
         event.preventDefault();
 
-        if (this.state.user !== 'john' || this.state.password !== 'qwerty') {
-            this.setState({
-                error: 'Incorrect user or password.'
-            })
+        if (inputs.user !== 'john' || inputs.password !== 'qwerty') {
+            setError('Incorrect user or password.');
         } else {
             // Auth passed, redirect to dashboard
-            console.log("success");
+            updateUser("John");
             navigate('/dashboard')
         }
-    }
+    };
 
-    handleUserChange(event) {
-        this.setState({ user: event.target.value });
-    }
-
-    handlePasswordChange(event) {
-        this.setState({ password: event.target.value });
-    }
-
-    render() {
-        return (
-            <div className='login-container'>
-                <div className='box'>
+    return (
+        <div className='login-container'>
+            <div className='box'>
+                <div>
+                    <div className='title'>{ props.text }</div>
+                    <div className='date'>{date.toLocaleTimeString()}</div>
+                </div>
+                <div>
                     <div>
-                        <div className='title'>{ this.props.text }</div>
-                        <div className='date'>{ this.state.date.toLocaleTimeString() }</div>
+                        <input type="Text" name="user" value={inputs.user} onChange={handleChange}/>
                     </div>
                     <div>
-                        <div>
-                            <input type="Text" value={ this.state.user } onChange={ this.handleUserChange }/>
-                        </div>
-                        <div>
-                            <input type="Password" value={ this.state.password } onChange={ this.handlePasswordChange }/>
-                        </div>
-                        <div className='error'>{ this.state.error }</div>
-                        <div>
-                            <button type="button" onClick={this.handleLogin}>Login</button>
-                        </div>
+                        <input type="Password" name="password" value={inputs.password} onChange={handleChange}/>
+                    </div>
+                    <div className='error'>{error}</div>
+                    <div>
+                        <button type="button" onClick={handleLogin}>Login</button>
                     </div>
                 </div>
             </div>
-        );
-    };
+        </div>
+    )
 }
-
-export default Login;
