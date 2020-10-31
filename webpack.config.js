@@ -1,8 +1,12 @@
 const path = require("path");
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: "./src/index.js",
+    entry: {
+        app: "./src/index.js"
+    },
     mode: "development",
     module: {
         rules: [
@@ -25,15 +29,27 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "dist/"),
         publicPath: "/dist/",
-        filename: "bundle.js"
+        filename: "[name].bundle.js",
+        chunkFilename: '[name].bundle.js'
     },
     devtool: 'inline-source-map',
     devServer: {
         contentBase: path.join(__dirname, "public/"),
-        port: 3000,
-        publicPath: "http://localhost:3000/dist/",
+        port: 9000,
+        publicPath: "http://localhost:9000/dist/",
         hotOnly: true,
         historyApiFallback: true
     },
-    plugins: [new webpack.HotModuleReplacementPlugin()]
+    watchOptions: {
+        ignored: ["node_modules/**"],
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+        new HtmlWebpackPlugin({
+            title: 'React Auth Flow',
+            template: 'public/index.html',
+            devServer: 'http://localhost:9000'
+        })
+    ]
 };
